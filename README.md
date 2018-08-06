@@ -1,2 +1,4 @@
-# TrueSV
-A strand-aware algorithm to eliminate erroneous structural variants
+# ScrubSV
+ScrubSV is a filtering toolset that uses SNP information to detect violating SVs and makrs them. 
+
+
