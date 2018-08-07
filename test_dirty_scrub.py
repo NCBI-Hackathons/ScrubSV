@@ -7,12 +7,16 @@ import unittest
 import filecmp
 import logging
 import json
+import os
+
+SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+TEST_DATA_FLD = os.path.join(SCRIPT_DIR, 'test_data')
 
 
 class TestVCFCombiner(unittest.TestCase):
     def test_concat_file_stream(self):
-        test_file_1 = 'test_data/samp1.tsv'
-        test_file_2 = 'test_data/samp2.tsv'
+        test_file_1 = os.path.join(TEST_DATA_FLD, 'samp1.tsv')
+        test_file_2 = os.path.join(TEST_DATA_FLD, 'samp2.tsv')
         expected_word = '10\t869444\n9921\t2103219\n21\t34\n22231_2\t6402439\n3332_GG\t100000\n'
         actual_word = ''
         with concat_read_only_file_stream(test_file_1, test_file_2) as f:
@@ -21,10 +25,12 @@ class TestVCFCombiner(unittest.TestCase):
         self.assertEqual(expected_word, actual_word)
 
     def test_load_vcf(self):
-        with open('test_data/H002.lumpy_noalts.json', 'r') as f:
+        variant_json = os.path.join(TEST_DATA_FLD, 'H002.lumpy_noalts.json')
+        variant_vcf = os.path.join(TEST_DATA_FLD, 'H002.lumpy_noalts.vcf')
+        with open(variant_json, 'r') as f:
             expected_dict = json.load(f)
 
-        actual_dict = load_vcf_to_dict('test_data/H002.lumpy_noalts.vcf')
+        actual_dict = load_vcf_to_dict(variant_vcf)
 
         self.assertEqual(expected_dict, actual_dict)
 
@@ -50,16 +56,17 @@ class DirtyScrubberIntegration(unittest.TestCase):
         logging.basicConfig(filename='TESTING_dirt_scrub.log', level=logging.DEBUG)
 
         # Setup
-        source_vcf = 'test_data/H002.lumpy_noalts.vcf'
-        expected_flagged_vcf = 'test_data/H002.lumpy_noalts.TEST-FLAGGED.vcf'
-        actual_flagged_vcf = 'DELETEME.vcf'
-        test_file_1 = 'test_data/samp1.tsv'
-        test_file_2 = 'test_data/samp2.tsv'
+        source_vcf = os.path.join(TEST_DATA_FLD, 'H002.lumpy_noalts.vcf')
+        expected_flagged_vcf = os.path.join(TEST_DATA_FLD, 'H002.lumpy_noalts.TEST-FLAGGED.vcf')
+        actual_flagged_vcf = os.path.join(TEST_DATA_FLD, 'DELETEME.vcf')
+        test_file_1 = os.path.join(TEST_DATA_FLD, 'samp1.tsv')
+        test_file_2 = os.path.join(TEST_DATA_FLD, 'samp2.tsv')
 
         # do it
         with concat_read_only_file_stream(test_file_1, test_file_2) as tsv_stream:
             vcf_update(
-                target_vcf=actual_flagged_vcf, source_vcf=source_vcf, tsv_stream=tsv_stream)
+                target_vcf=actual_flagged_vcf, source_vcf=source_vcf,
+                tsv_stream=tsv_stream, overwrite=True)
 
         self.assertTrue(
             filecmp.cmp(expected_flagged_vcf, actual_flagged_vcf))

@@ -7,7 +7,6 @@ import logging
 import csv
 
 from .declarations import YomoDict
-import pprint
 
 
 FIXED_VCF_COLUMNS = ["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO"]
@@ -70,7 +69,7 @@ def should_flag_variant(vcf_obj, var_id, var_pos):
     return var_id in vcf_obj and vcf_obj[var_id] == var_pos
 
 
-def vcf_update(target_vcf, source_vcf, tsv_stream):
+def vcf_update(target_vcf, source_vcf, tsv_stream, overwrite=False):
     """Top level functions for updating the target vcf FILTER column
 
     Strategy:
