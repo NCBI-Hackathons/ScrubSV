@@ -4,13 +4,20 @@ from dirty_scrub.vcfcombiner import concat_read_only_file_stream, load_vcf_to_di
 from dirty_scrub.declarations import YomoDict
 
 import unittest
-import filecmp
 import logging
 import json
 import os
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 TEST_DATA_FLD = os.path.join(SCRIPT_DIR, 'test_data')
+
+
+def compare_file_content(file1, file2):
+    with open(file1, 'r') as f1, open(file2, 'r') as f2:
+        for line1, line2 in zip(f1, f2):
+            if line1 != line2:
+                return False
+    return True
 
 
 class TestVCFCombiner(unittest.TestCase):
@@ -53,7 +60,7 @@ class TestYOMODict(unittest.TestCase):
 class DirtyScrubberIntegration(unittest.TestCase):
     def test_vcf_flag(self):
         # log file
-        logging.basicConfig(filename='TESTING_dirt_scrub.log', level=logging.DEBUG)
+        logging.basicConfig(filename='TEST_DIRTY_SCRUBBER.log', level=logging.DEBUG, filemode='w')
 
         # Setup
         source_vcf = os.path.join(TEST_DATA_FLD, 'H002.lumpy_noalts.vcf')
@@ -66,10 +73,10 @@ class DirtyScrubberIntegration(unittest.TestCase):
         with concat_read_only_file_stream(test_file_1, test_file_2) as tsv_stream:
             vcf_update(
                 target_vcf=actual_flagged_vcf, source_vcf=source_vcf,
-                tsv_stream=tsv_stream, overwrite=True)
+                tsv_stream=tsv_stream)
 
         self.assertTrue(
-            filecmp.cmp(expected_flagged_vcf, actual_flagged_vcf))
+            compare_file_content(expected_flagged_vcf, actual_flagged_vcf))
 
 
 if __name__ == '__main__':
