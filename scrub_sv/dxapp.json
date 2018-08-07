@@ -1,0 +1,70 @@
+{
+  "name": "scrub_sv",
+  "title": "ScrubSV",
+  "summary": "SV calling is still hard, ScrubSV flags false positives",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "svs_vcf",
+      "label": "Structural Variant VCF file",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "snp_vcf",
+      "label": "SNP Variants",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "mapping_bam",
+      "label": "Mappings file",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "flagged_vcf",
+      "label": "Annotated VCF",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "hours": 48
+      }
+    },
+    "interpreter": "bash",
+    "release": "14.04",
+    "distribution": "Ubuntu",
+    "file": "src/scrub_sv.sh"
+  },
+  "regionalOptions": {
+    "aws:us-east-1": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_x4"
+        }
+      }
+    }
+  }
+}
