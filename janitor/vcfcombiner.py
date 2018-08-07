@@ -5,7 +5,6 @@ from itertools import chain
 from contextlib import contextmanager
 import logging
 import csv
-import os
 
 from .declarations import YomoDict
 
@@ -109,8 +108,13 @@ def vcf_update(target_vcf, source_vcf, tsv_stream):
         tsv_writer = csv.writer(new_vcf, delimiter='\t')
 
         for row in tsv_reader:
+
+            if len(row) > 8:
+                pass
+
             var_id = row[2]
-            if len(row) > 8 and var_id in ori_vcf_obj:
+
+            if var_id in ori_vcf_obj:
                 filter_codes = ';'.join(ori_vcf_obj[var_id]['filter_codes'])
                 logging.debug('Filter codes: ' + str(filter_codes))
                 row[6] = filter_codes
