@@ -17,12 +17,18 @@ if [ $# -eq $min_args ]; then
 		cat $svs'.bedpe' | grep -v 'TRA' | cut -f 1,2,5,7,11 > $svs'.bed'
 		rm  $svs'.bedpe'
 		bedtools intersect -wo -a $snp -b $svs'.bed'  > $svs'_intersectSNP.tab'
+		rm  $svs'.bed'
+		grep 'DUP' $svs'_intersectSNP.tab' > $svs'_intersectSNP.DUP.tab'
+		grep 'DEL' $svs'_intersectSNP.tab' > $svs'_intersectSNP.DEL.tab'
+		grep 'INV' $svs'_intersectSNP.tab' > $svs'_intersectSNP.INV.tab'
+		rm  $svs'_intersectSNP.tab'
        fi
 
 else
         echo "Intersects SVs with SNP for subprocessing"
         echo "File path of SVs VCF.GZ file"
 	echo "File path of SNP VCF.GZ file"
+	echo "Output: Reports a tab formated SNP file splitted into DUP, DEL, INV."
 fi
 
 
