@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import unicode_literals, print_function, division, absolute_import
-from dirty_scrub.vcfcombiner import concat_read_only_file_stream, load_vcf_to_dict, vcf_update
-from dirty_scrub.declarations import YomoDict
+from janitor.vcfcombiner import concat_read_only_file_stream, load_vcf_to_dict, vcf_update
+from janitor.declarations import YomoDict
 
 import unittest
 import logging
@@ -20,7 +20,7 @@ def compare_file_content(file1, file2):
     return True
 
 
-class TestVCFCombiner(unittest.TestCase):
+class TestJanitorTools(unittest.TestCase):
     def test_concat_file_stream(self):
         test_file_1 = os.path.join(TEST_DATA_FLD, 'samp1.tsv')
         test_file_2 = os.path.join(TEST_DATA_FLD, 'samp2.tsv')
@@ -57,10 +57,10 @@ class TestYOMODict(unittest.TestCase):
             raise self.fail("Succeeded updating key")
 
 
-class DirtyScrubberIntegration(unittest.TestCase):
+class JanitorIntegration(unittest.TestCase):
     def test_vcf_flag(self):
         # log file
-        logging.basicConfig(filename='TEST_DIRTY_SCRUBBER.log', level=logging.DEBUG, filemode='w')
+        logging.basicConfig(filename='TEST_janitor.log', level=logging.DEBUG, filemode='w')
 
         # Setup
         source_vcf = os.path.join(TEST_DATA_FLD, 'H002.lumpy_noalts.vcf')

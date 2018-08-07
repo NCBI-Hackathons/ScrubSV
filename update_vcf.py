@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import print_function, unicode_literals, absolute_import
-from dirty_scrub import vcfcombiner
+from janitor import vcfcombiner
 import argparse
 import logging
 
@@ -25,7 +25,7 @@ def _parse_args():
 if __name__ == '__main__':
     args = _parse_args()
 
-    logging.basicConfig(filename='DIRTY_SCRUBBER.log', level=logging.DEBUG, filemode='w')
+    logging.basicConfig(filename='janitorBER.log', level=logging.DEBUG, filemode='w')
 
     # argparse
     if args.target_vcf is None:
