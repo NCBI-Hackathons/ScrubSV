@@ -23,4 +23,5 @@ __pycache__/
 # Testing
 ###############################
 DELETEME.vcf
+HG002_delly.tab
 
