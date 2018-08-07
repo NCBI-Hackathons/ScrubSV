@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import unicode_literals, print_function, division, absolute_import
-from janitor.vcfcombiner import concat_read_only_file_stream, load_vcf_to_dict, vcf_update
-from janitor.declarations import YomoDict
+from ..vcfcombiner import concat_read_only_file_stream, load_vcf_to_dict, vcf_update
+from ..declarations import YomoDict
 
 import unittest
 import logging
