@@ -3,7 +3,10 @@
 from __future__ import print_function, unicode_literals, absolute_import
 from itertools import chain
 from contextlib import contextmanager
+import logging
 import csv
+
+from .declarations import YomoDict
 
 
 FIXED_VCF_COLUMNS = ["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO"]
@@ -33,15 +36,26 @@ def load_vcf_to_dict(vcf_file):
 
     expects row to be at least size 8 (VCF spec)
     """
-    vcf_obj = dict()
+    def _update_yomo_dict(vcf_row, line_num):
+        variant_id = vcf_row[2]
+        variant_start_pos = vcf_row[1]
+
+        if variant_id == '.':
+            logging.debug('Encountered "." on line {line_num}'.format(
+                line_num=line_num))
+
+        try:
+            vcf_obj[variant_id] = int(variant_start_pos)
+        except KeyError:
+            logging.info('{var_id} id occured multiple times'.format)
+
+    vcf_obj = YomoDict()
     with open(vcf_file, 'r') as f:
         reader = csv.reader(f, delimiter='\t')
-        for row in reader:
+        for assumed_line, row in enumerate(reader):
             if len(row) < 8:
                 continue
-            variant_id = row[2]
-            variant_start_pos = row[1]
-            vcf_obj[variant_id] = int(variant_start_pos)
+            _update_yomo_dict(vcf_row=row, line_num=assumed_line)
 
     return vcf_obj
 
