@@ -73,4 +73,11 @@ def vcf_update(target_vcf, source_vcf, tsv_stream):
         5. Write updated VCF to disk (target file)
     """
     ori_vcf_obj = load_vcf_to_dict(source_vcf)
-    pass
+    tsv_reader = csv.reader(tsv_stream, delimiter='\t')
+
+    with open(target_vcf, 'w') as vcf:
+        for tsv_row in tsv_reader:
+            print(tsv_row)
+            var_id, var_pos = tsv_row
+            if var_id in ori_vcf_obj and ori_vcf_obj[var_id] == var_pos:
+                vcf.write('FLAGGED {vcf_id}\n')
