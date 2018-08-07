@@ -5,6 +5,7 @@ from dirty_scrub.declarations import YomoDict
 
 import unittest
 import filecmp
+import logging
 import json
 
 
@@ -44,8 +45,10 @@ class TestYOMODict(unittest.TestCase):
 
 
 class DirtyScrubberIntegration(unittest.TestCase):
-    #@unittest.skip("Not ready yet")
     def test_vcf_flag(self):
+        # log file
+        logging.basicConfig(filename='TESTING_dirt_scrub.log', level=logging.DEBUG)
+
         # Setup
         source_vcf = 'test_data/H002.lumpy_noalts.vcf'
         expected_flagged_vcf = 'test_data/H002.lumpy_noalts.TEST-FLAGGED.vcf'

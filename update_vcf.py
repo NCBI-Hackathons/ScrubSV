@@ -25,7 +25,7 @@ def _parse_args():
 if __name__ == '__main__':
     args = _parse_args()
 
-    logging.basicConfig(filename='example.log', level=logging.DEBUG)
+    logging.basicConfig(filename='DIRTY_SCRUBBER.log', level=logging.DEBUG)
 
     # argparse
     if args.target_vcf is None:

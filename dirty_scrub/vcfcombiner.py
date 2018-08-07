@@ -7,6 +7,7 @@ import logging
 import csv
 
 from .declarations import YomoDict
+import pprint
 
 
 FIXED_VCF_COLUMNS = ["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO"]
@@ -37,6 +38,7 @@ def load_vcf_to_dict(vcf_file):
     expects row to be at least size 8 (VCF spec)
     """
     def _update_yomo_dict(vcf_row, line_num):
+        logging.debug('Updating line: ' + str(line_num))
         variant_id = vcf_row[2]
         variant_start_pos = vcf_row[1]
 
@@ -54,10 +56,18 @@ def load_vcf_to_dict(vcf_file):
         reader = csv.reader(f, delimiter='\t')
         for assumed_line, row in enumerate(reader):
             if len(row) < 8:
+                logging.debug("Skipping line: " + str(assumed_line))
                 continue
             _update_yomo_dict(vcf_row=row, line_num=assumed_line)
 
+    logging.debug("LOADED VCF {vcf_file}:\n{vcf_obj}".format(
+        vcf_file=vcf_file, vcf_obj=vcf_obj))
+
     return vcf_obj
+
+
+def should_flag_variant(vcf_obj, var_id, var_pos):
+    return var_id in vcf_obj and vcf_obj[var_id] == var_pos
 
 
 def vcf_update(target_vcf, source_vcf, tsv_stream):
@@ -77,7 +87,8 @@ def vcf_update(target_vcf, source_vcf, tsv_stream):
 
     with open(target_vcf, 'w') as vcf:
         for tsv_row in tsv_reader:
-            print(tsv_row)
-            var_id, var_pos = tsv_row
-            if var_id in ori_vcf_obj and ori_vcf_obj[var_id] == var_pos:
-                vcf.write('FLAGGED {vcf_id}\n')
+            logging.debug("TSV ROW: " + str(tsv_row))
+            var_id, var_pos = tsv_row[0], int(tsv_row[1])
+            if should_flag_variant(ori_vcf_obj, var_id=var_id, var_pos=var_pos):
+                logging.info("FLAGGING: {var_id}\t{var_pos}".format(var_id=var_id, var_pos=var_pos))
+                vcf.write('FLAGGED {var_id}\n'.format(var_id=var_id))
