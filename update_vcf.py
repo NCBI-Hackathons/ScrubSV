@@ -37,4 +37,4 @@ if __name__ == '__main__':
     # Combine flags
     with vcfcombiner.concat_read_only_file_stream(args.input_tsvs) as tsv_fhs:
         vcfcombiner.vcf_update(
-            args.target_vcf, source_vcf=args.original_vcf, tsv_stream=tsv_fhs)  # TODO
+            target_vcf, source_vcf=args.original_vcf, tsv_stream=tsv_fhs)  # TODO
