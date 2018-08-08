@@ -8,9 +8,7 @@ https://docs.google.com/presentation/d/16ZwtBfEyv7mvlIw1uxhgUtazK3lBlYRjU0Ys9OCQ
 
 ### ...and a link to the DOI:
 
-## Awesome Logo
-
-### You can make a free DOI with zenodo <link>
+![alt text](ScrubSV_logo.png)
 
 ## Quickstart
 
