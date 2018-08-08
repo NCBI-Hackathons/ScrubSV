@@ -1,12 +1,10 @@
-# ScrubSV
-ScrubSV is a filtering toolset that uses SNP information to detect violating SVs and marks them. 
+## ScrubSV
+A toolkit to detect and flag false SV's based on SNP's 
+Hackathon team: Lead: Fritz Sedlazeck - SysAdmin: Steve Osazuwa - Programmers: Priya Kritivasan, Kshithija Nagulapalli, David Oliver, Seungyeul Yoo
 
-Methodology Slides:
-https://docs.google.com/presentation/d/16ZwtBfEyv7mvlIw1uxhgUtazK3lBlYRjU0Ys9OCQss8/edit?usp=sharing
+## How to cite this work in a publication: Sedlazeck F et al. ScrubSV: A toolkit to detect and flag false SV's based on SNP's
 
-## Please cite our work -- here is the ICMJE Standard Citation:
-
-### ...and a link to the DOI:
+link to the DOI:
 
 ![alt text](ScrubSV_logo.png)
 
@@ -24,6 +22,8 @@ https://docs.google.com/presentation/d/16ZwtBfEyv7mvlIw1uxhgUtazK3lBlYRjU0Ys9OCQ
 
 ## Software Workflow Diagram
 ![alt text](Workflow.png)
+Methodology Slides:
+https://docs.google.com/presentation/d/16ZwtBfEyv7mvlIw1uxhgUtazK3lBlYRjU0Ys9OCQss8/edit?usp=sharing
 ## File structure diagram 
 
 #### _Define paths, variable names, etc_
