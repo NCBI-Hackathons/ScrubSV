@@ -37,7 +37,7 @@ DP_SD <- dups %>%
 DPSD_threshold <- mean(DP_SD$sdDP) + (2 * sd(DP_SD$sdDP)) 
 DP_SD_thresh <- filter(DP_SD, sdDP>DPSD_threshold)
 dups_DP_SD <- filter(dups, V14 %in% DP_SD_thresh$V14) %>% 
-  mutate(FLAG = "DP_highSD") %>% 
+  mutate(FLAG = "scrubsv_highSD") %>% 
   select(V14,V12,FLAG) %>% 
   distinct()
 colnames(dups_DP_SD) <- c("ID","POS","FLAG")
@@ -47,7 +47,7 @@ colnames(dups_DP_SD) <- c("ID","POS","FLAG")
 
 #group multiallelic SNVs
 #to do: edit to allow for other multiallelic genotype combinations
-multiallelic <- c("1/2","2/1","2|1","1|2")
+multiallelic <- c("1/2","2/1","2|1","1|2","1/3","2/3","3/1","3/2")
 
 #identify SVs overlapping multiallelic SNVs
 dups_multiallelic <- dups %>% 
@@ -59,7 +59,7 @@ dups_multiallelic <- dups %>%
 #flag only those SVs with multiallelic SNVs that have not been flagged for high DP SD before
 dups_MA <- dups %>% 
   filter(V14 %in% dups_multiallelic$V14 && !(V14 %in% DP_SD_thresh$V14)) %>% 
-  mutate(FLAG = "multiallelic") %>% 
+  mutate(FLAG = "scrubdup_multiallelic") %>% 
   select(V14,V12,FLAG) %>% 
   distinct()
 colnames(dups_MA) <- c("ID","POS","FLAG")
