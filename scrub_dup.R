@@ -4,7 +4,7 @@
 #Usage: Rscript duplication_flags.R vcffile num_multiallelic_snps num_snps_sd
 
 #load required libraries, install them if not available
-packages <- c("dplyr","tidyr","data.table","reshape2","stringr")
+packages <- c("dplyr","tidyr","data.table")
 package.check <- lapply(packages, FUN = function(x) {
   if (!require(x, character.only = TRUE)) {
     install.packages(x, dependencies = TRUE)
@@ -21,24 +21,24 @@ num_multiallelic_snps = args[3]
 #read file containing SNPs overlapping with SVs
 dups <- fread(vcffile,sep="\t",header=F)
 #remove SNPs with DP 0
-dups <- dups %>% filter(dups, !(V17==0))
+dups <- dups %>% filter(!(V8==0))
 
 #identifying SVs with SD of read depths greater than SD threshold (mean + 2SD)
 sd_min_numsnp_threshold = ifelse(num_snps_sd > 4, num_snps_sd, 4)
-dups_snps_n5 <- dups %>% 
-  group_by(V14) %>% 
+dups_min_snps <- dups %>% 
+  group_by(V6) %>% 
   summarize(nsnp=n()) %>% 
   filter(nsnp > sd_min_numsnp_threshold)
 DP_SD <- dups %>% 
-  filter(V14 %in% dups_snps_n5$V14) %>% 
-  group_by(V14) %>% 
-  summarize(sdDP=sd(as.numeric(V17)))
+  filter(V6 %in% dups_min_snps$V6) %>% 
+  group_by(V6) %>% 
+  summarize(sdDP=sd(as.numeric(V8)))
 #get SD cut-off value
 DPSD_threshold <- mean(DP_SD$sdDP) + (2 * sd(DP_SD$sdDP)) 
 DP_SD_thresh <- filter(DP_SD, sdDP>DPSD_threshold)
-dups_DP_SD <- filter(dups, V14 %in% DP_SD_thresh$V14) %>% 
+dups_DP_SD <- filter(dups, V6 %in% DP_SD_thresh$V6) %>% 
   mutate(FLAG = "scrubsv_highSD") %>% 
-  select(V14,V12,FLAG) %>% 
+  select(V6,V5,FLAG) %>% 
   distinct()
 colnames(dups_DP_SD) <- c("ID","POS","FLAG")
 
@@ -51,16 +51,16 @@ multiallelic <- c("1/2","2/1","2|1","1|2","1/3","2/3","3/1","3/2")
 
 #identify SVs overlapping multiallelic SNVs
 dups_multiallelic <- dups %>% 
-  separate(V10,sep=":",into=c("GT")) %>% 
+  separate(V3,sep=":",into=c("GT")) %>% 
   filter(GT %in% multiallelic) %>% 
-  group_by(V14) %>% 
+  group_by(V6) %>% 
   summarize(num_multiallelic = n()) %>% 
   filter(num_multiallelic >= num_multiallelic_snps)
 #flag only those SVs with multiallelic SNVs that have not been flagged for high DP SD before
 dups_MA <- dups %>% 
-  filter(V14 %in% dups_multiallelic$V14 && !(V14 %in% DP_SD_thresh$V14)) %>% 
+  filter(V6 %in% dups_multiallelic$V6 && !(V6 %in% DP_SD_thresh$V6)) %>% 
   mutate(FLAG = "scrubdup_multiallelic") %>% 
-  select(V14,V12,FLAG) %>% 
+  select(V6,V5,FLAG) %>% 
   distinct()
 colnames(dups_MA) <- c("ID","POS","FLAG")
 
