@@ -26,10 +26,10 @@ if [ $# -eq $min_args ]; then
 		grep 'DEL' $svs'.bed' > $svs'.DEL.bed'
 		
 		echo "extract SNPs overlapping SVs and reformat into bed file for DUP and INV"
-		bedtools intersect -wo -a $snp -b  $svs'.DUP.bed'| awk '{print $1,$2,$2+1,$10,$11,$12,$13,$14,$15}' | sed 's/ /	/g' >  $svs'_intersectSNP.DUP.bed'
+		bedtools intersect -wo -a $snp -b $svs'.DUP.bed' | awk '{print $1,$2,$2+1,$10,$11,$12,$13,$14,$15}' | sed 's/ /	/g' >  $svs'_intersectSNP.DUP.bed'
 		bedtools intersect -wo -a $snp -b $svs'.INV.bed' | awk '{print $1,$2,$2+1,$10,$11,$12,$13,$14,$15}' | sed 's/ /	/g' >  $svs'_intersectSNP.INV.bed'
 		
-		bedtools intersect -wo -a $snp -b  $svs'.DEL.bed' >  $svs'_intersectSNP.DEL.tab'
+		bedtools intersect -wo -a $snp -b $svs'.DEL.bed' >  $svs'_intersectSNP.DEL.tab'
 
 		echo "compute coverage and parse it over into a bed file"
 		samtools depth -q 20 -b $svs'.DUP.bed'  $reads | awk '{print $1,$2,$2+1,$3}' | sed 's/ /	/g' |  gzip - > $svs'_DUP_cov.txt.gz'
