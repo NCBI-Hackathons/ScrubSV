@@ -2,7 +2,7 @@
 
 ## ScrubSV
 A toolkit to detect and flag potentially false SV's based on SNP's  and coverage.
-Hackathon team: Lead: Fritz Sedlazeck - SysAdmin: Steve Osazuwa - Programmers: Priya Kritivasan, Kshithija Nagulapalli, David Oliver, Seungyeul Yoo
+Hackathon team: Lead: Fritz Sedlazeck - SysAdmin: Steve Osazuwa - Programmers: Priya Krithivasan, Kshithija Nagulapalli, David Oliver, Seungyeul Yoo
 
 ## How to use
 Input requirements
