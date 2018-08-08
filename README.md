@@ -15,17 +15,19 @@ Input requirements
 `git clone -r https://github.com/NCBI-Hackathons/ScrubSV.git`<br/>
 `cd ScrubSV`
 
-## Install HapCUT2
+### Install HapCUT2
 Refer to https://github.com/vibansal/HapCUT2 for installation instructions
 
-## Install SURVIVOR
+### Install SURVIVOR
 Refer to https://github.com/fritzsedlazeck/SURVIVOR for installation instructions. Move the executable to the current working directory.
 
-## Dependencies: vcftools and Genomic Ranges
-To install vcftools<br/>
+### Dependencies
+vcftools and Genomic Ranges
+
+Install vcftools<br/>
 `sudo apt-get vcftools`
 
-To install GenomicRanges<br/>
+Install GenomicRanges<br/>
 `source("https://bioconductor.org/biocLite.R")`<br/>
 `biocLite("GenomicRanges")`<br/>
 `library(GenomicRanges)`<br/>
