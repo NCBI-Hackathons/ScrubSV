@@ -25,29 +25,58 @@ strsplit2 <- function (x, split, ...) {
   out
 }
 
+tabulateErroneousSNPs <- function(snpCharVec, minSNPs){
+  if(length(snpCharVec) == 1){
+    return("oneSNP")
+  }
+  tabSNPs <- table(snpCharVec)
+  phased <- tabSNPs[grepl("[|]", names(tabSNPs))]
+  notPhased <- tabSNPs[grepl("[/]", names(tabSNPs))]
+  # if the Deletion doesn't contain enough SNPs don't flag it
+  if(sum(tabSNPs) <= minSNPs){
+    # print("max SNPs is less than threshold")
+    return("tooFew")
+  }
+  # if the deletion is multallelic flag it!
+  if(any(grepl("2|3", names(tabSNPs)))){
+    if(sum(tabSNPs[grepl("2|3", names(tabSNPs))]) > minSNPs){
+      # print("this is multiallelic")
+      return("multiAl")
+    }
+  }
+  if(any(tabSNPs[grep("0[|]1|1[|]0|0/1|1/0", names(tabSNPs))])) {
+    if(sum(tabSNPs[grep("0[|]1|1[|]0|0/1|1/0", names(tabSNPs))] > minSNPs)){
+      return("hetAl")
+    }
+  }
+  # If we made it this far, let's just say the SV deserves another shot
+  # print("we made it to the end")
+  return("okCall")
+}
+
 # filter for non-phased SNPs
 # minSNPs is the minimum number of erroneous SNPs to call a FLAG
 filterErroneousSNPs <- function(snpCharVec, minSNPs){
-  if(nrow(snpCharVec) == 1){
+  if(length(snpCharVec) == 1){
     return(FALSE)
   }
   tabSNPs <- table(snpCharVec)
   phased <- tabSNPs[grepl("[|]", names(tabSNPs))]
   notPhased <- tabSNPs[grepl("[/]", names(tabSNPs))]
   # if the Deletion doesn't contain enough SNPs don't flag it
-  if(max(tabSNPs) <= minSNPs){
+  if(sum(tabSNPs) <= minSNPs){
     # print("max SNPs is less than threshold")
     return(FALSE)
   }
   # if the deletion is multallelic flag it!
   if(any(grepl("2|3", names(tabSNPs)))){
-    if(max(tabSNPs[grepl("2|3", names(tabSNPs))]) > minSNPs){
+    if(sum(tabSNPs[grepl("2|3", names(tabSNPs))]) > minSNPs){
       # print("this is multiallelic")
       return(TRUE)
     }
   }
   if(any(tabSNPs[grep("0[|]1|1[|]0|0/1|1/0", names(tabSNPs))])) {
-    if(max(tabSNPs[grep("0[|]1|1[|]0|0/1|1/0", names(tabSNPs))] > minSNPs)){
+    if(sum(tabSNPs[grep("0[|]1|1[|]0|0/1|1/0", names(tabSNPs))] > minSNPs)){
       return(TRUE)
     }
   }
@@ -58,9 +87,9 @@ filterErroneousSNPs <- function(snpCharVec, minSNPs){
 
 # function for reading in VCF containing SNPs in Deleted SVs
 # nSNPs = the number of SNPs required to determine flagged DEL SVs
-scrub_del <- function(delVCF, minSNPs){
+scrub_del <- function(delVCF, minSNPs, test = FALSE){
   suppressMessages(library(magrittr))
-  suppressMessages(library(plyr))
+  suppressMessages(library(dplyr))
   suppressMessages(library(data.table))
   # is input going to be gzipped?
   input <- 
@@ -69,25 +98,32 @@ scrub_del <- function(delVCF, minSNPs){
     `colnames<-` (., c("SNP", "POS", "ID", "FLAG")) %>% 
     mutate(SNP = strsplit2(.$SNP, ":")[,1], FLAG = NA)
   
-  filterFLAG <-
-    split(input, input$ID) %>% 
-    lapply(., function(x){filterErroneousSNPs(x[,1], minSNPs)}) %>% 
-    unlist()
-  
-  out <- 
-    input[input$ID %in% names(which(filterFLAG)),] %>% 
-    mutate(SNP = NULL, FLAG = "scrub_del") %>% 
-    unique() %>% 
-    `rownames<-` (., c())
-  
-  #saving a file could be a problem for parallel execution
-  write.table(x = out, file = "scrub_del.tsv", quote = F, row.names = FALSE, sep = "\t")
-  # return(out)
+  if(test == FALSE){
+    filterFLAG <-
+      split(input, input$ID) %>%
+      lapply(., function(x){filterErroneousSNPs(x[,1], minSNPs)}) %>%
+      unlist()
+    out <-
+      input[input$ID %in% names(which(filterFLAG)),] %>%
+      mutate(SNP = NULL, FLAG = "scrub_del") %>%
+      unique() %>%
+      `rownames<-` (., c())
+    write.table(x = out, file = "scrub_del.tsv", quote = F, row.names = FALSE, sep = "\t")
+  } else {
+    filterFLAG <-
+      split(input, input$ID) %>% 
+      lapply(., function(x){tabulateErroneousSNPs(x[,1], minSNPs)}) %>% 
+      unlist()
+    return(filterFLAG)
+  }
 }
 
 installRequiredPackages(myRequired = c("magrittr", "plyr", "data.table"))
 
 args <- commandArgs(TRUE)
 
-scrub_del(delVCF = as.character(args[1]), minSNPs = as.numeric(args[2]))
+scrub_del(delVCF = as.character(args[1]), minSNPs = as.numeric(args[2]), test = FALSE)
+
+# myCalls <- scrub_del(delVCF = "~/Git/Hackathon/Data/merged_HG002.vcf.gz_intersectSNP.DEL.tab", minSNPs = 5, test = F)
+# myCallsTable <- scrub_del(delVCF = "~/Git/Hackathon/Data/merged_HG002.vcf.gz_intersectSNP.DEL.tab", minSNPs = 5, test = T)
 
