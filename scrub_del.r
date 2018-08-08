@@ -41,13 +41,15 @@ filterErroneousSNPs <- function(snpCharVec, minSNPs){
   }
   # if the deletion is multallelic flag it!
   if(any(grepl("2|3", names(tabSNPs)))){
-    # print("this is multiallelic")
-    return(TRUE)
+    if(max(tabSNPs[grepl("2|3", names(tabSNPs))]) > minSNPs){
+      # print("this is multiallelic")
+      return(TRUE)
+    }
   }
   if(any(tabSNPs[grep("0[|]1|1[|]0|0/1|1/0", names(tabSNPs))])) {
     if(max(tabSNPs[grep("0[|]1|1[|]0|0/1|1/0", names(tabSNPs))] > minSNPs)){
       return(TRUE)
-    } else { return(FALSE) }
+    }
   }
   # If we made it this far, let's just say the SV deserves another shot
   # print("we made it to the end")
