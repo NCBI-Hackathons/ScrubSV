@@ -14,12 +14,12 @@ if [ $# -eq $min_args ]; then
 		snp=$2
 		reads=$3
 		zcat $svs > $svs'.tmp.vcf'
-		~/workspace/SURVIVOR/Debug/SURVIVOR vcftobed $svs'.tmp.vcf' -1 -1 $svs'.bedpe'
+		SURVIVOR vcftobed $svs'.tmp.vcf' -1 -1 $svs'.bedpe'
 		cat $svs'.bedpe' | grep -v 'TRA' | cut -f 1,2,5,7,11 > $svs'.bed'
 		rm  $svs'.bedpe'
 		bedtools intersect -wo -a $snp -b $svs'.bed'  > $svs'_intersectSNP.tab'
 		##awk '{print $1":"$2"-"$2+1}'  $svs'_intersectSNP.tab' | uniq  >  $svs'_intersectSNP.reg'
-		samtools depth -q 20 -a -b $svs'.bed'  $reads | gzip - > $svs'_cov.txt.gz'
+		samtools depth -q 20 -b $svs'.bed'  $reads | gzip - > $svs'_cov.txt.gz'
 		rm  $svs'.bed'
 		
 		grep 'DUP' $svs'_intersectSNP.tab' > $svs'_intersectSNP.DUP.tab'
