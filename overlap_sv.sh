@@ -15,6 +15,18 @@
 
 ################  The script ################
 
+min_args=1
+
+if [ $# -ne $min_args ]; then
+	echo "Specify only the SV VCF file"
+	exit 1
+else
+        echo "Intersects SVs with SNP for subprocessing"
+        echo "File path of SVs VCF.GZ file"
+	echo "File path of SNP VCF.GZ file"
+	echo "Output: Reports a tab formated SNP file splitted into DUP, DEL, INV."
+fi
+
 sv_vcf="${1}"
 sv_vcf_name= "${sv_vcf%%.vcf}"
 sv_vcf_name="${sv_vcf%%.vcf.gz}"
