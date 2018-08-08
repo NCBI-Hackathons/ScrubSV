@@ -29,7 +29,6 @@ strsplit2 <- function (x, split, ...) {
 # minSNPs is the minimum number of erroneous SNPs to call a FLAG
 filterErroneousSNPs <- function(snpCharVec, minSNPs){
   if(nrow(snpCharVec) == 1){
-    # print("length is 1")
     return(FALSE)
   }
   tabSNPs <- table(snpCharVec)
@@ -45,33 +44,11 @@ filterErroneousSNPs <- function(snpCharVec, minSNPs){
     # print("this is multiallelic")
     return(TRUE)
   }
-  # are these phased SNPs?
-  if(any(phased) & length(phased) > 1) {
-    # are there incongruous phased SNP calls?
-    if(any(snpCharVec == "0|1") & any(snpCharVec == "1|0") | 
-       ((any(snpCharVec == "0|1") | any(snpCharVec == "1|0")) & 
-        (any(snpCharVec == "1|1") | any(snpCharVec == "1/1")))) {
-      # are there enough to meet minSNPs requirement
-      if(max(phased[-which.max(phased)]) > minSNPs){
-        return(TRUE)
-        # if there is no additional evidence then return false
-      } else if(!any(notPhased)){
-        return(FALSE)
-      }
-    } 
+  if(any(tabSNPs[grep("0[|]1|1[|]0|0/1|1/0", names(tabSNPs))])) {
+    if(max(tabSNPs[grep("0[|]1|1[|]0|0/1|1/0", names(tabSNPs))] > minSNPs)){
+      return(TRUE)
+    } else { return(FALSE) }
   }
-  # if we made it this far and there are non-phased SNP calls
-  if(any(notPhased) & length(notPhased) > 1){
-    # if there are conflicting non-phased SNPs
-    if((any(snpCharVec == "0/1") | any(snpCharVec == "1/0")) & 
-       (any(snpCharVec == "1/1") | any(snpCharVec == "1|1"))) {
-      # if the conflicting SNP call is greater than theshold call it TRUE
-      if(max(notPhased[-which.max(notPhased)]) > minSNPs){
-        return(TRUE)
-        # else return false
-      } else { return(FALSE) }
-    }
-  } 
   # If we made it this far, let's just say the SV deserves another shot
   # print("we made it to the end")
   return(FALSE)
@@ -102,8 +79,8 @@ scrub_del <- function(delVCF, minSNPs){
     `rownames<-` (., c())
   
   #saving a file could be a problem for parallel execution
-  # write.table(x = out, file = "scrub_del.tsv", quote = F, row.names = FALSE, sep = "\t")
-  return(out)
+  write.table(x = out, file = "scrub_del.tsv", quote = F, row.names = FALSE, sep = "\t")
+  # return(out)
 }
 
 installRequiredPackages(myRequired = c("magrittr", "plyr", "data.table"))
