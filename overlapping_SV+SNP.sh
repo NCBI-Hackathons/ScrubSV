@@ -15,8 +15,15 @@ if [ $# -eq $min_args ]; then
 		reads=$3
 		
 		echo "Converting SVs vcf to bed file:"
-		zcat $svs > $svs'.tmp.vcf'
-		SURVIVOR vcftobed $svs'.tmp.vcf' -1 -1 $svs'.bedpe'
+
+		if [[ "${svs}" =~ \.gz$ ]]; then
+			zcat $svs > $svs'.tmp.vcf'
+			svs_name="${svs}.tmp.vcf"
+		else
+			svs_name="${svs}"
+		fi
+
+		SURVIVOR vcftobed "${svs_name}" -1 -1 $svs'.bedpe'
 		cat $svs'.bedpe' | grep -v 'TRA' | cut -f 1,2,5,7,11 > $svs'.bed'
 		rm  $svs'.bedpe'
 		
