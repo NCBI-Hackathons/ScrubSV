@@ -1,7 +1,7 @@
-#This script reads in a file from the output of intersecting duplications with overlapping SNVs, and then performs the following has two parts: 
+#This script reads in a file from the output of intersecting duplications with overlapping SNVs, and then performs the following two parts: 
 #(i) Identify duplications that overlap a user-defined minimum number of SNPs (num_snps_sd, at least 4), and flag duplications with highly fluctuating SNP coverages (read depth SDs for a given duplication larger than 2 standard deviations from the mean)
 #(ii) Flag duplications with a minimum number (user specified, num_multiallelic_snps) of multiallelic SNPs.
-#Usage: Rscript duplication_flags.R vcffile num_multiallelic_snps num_snps_sd
+#Usage: Rscript scrub_dup.R vcffile num_snps_sd num_multiallelic_snps 
 
 #load required libraries, install them if not available
 packages <- c("dplyr","tidyr","data.table")
