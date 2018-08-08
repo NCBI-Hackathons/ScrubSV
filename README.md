@@ -25,7 +25,7 @@ https://docs.google.com/presentation/d/16ZwtBfEyv7mvlIw1uxhgUtazK3lBlYRjU0Ys9OCQ
 ### Because we are the best bioinformaticians ever!
 
 ## Software Workflow Diagram
-
+![alt text](Workflow.png)
 ## File structure diagram 
 
 #### _Define paths, variable names, etc_
