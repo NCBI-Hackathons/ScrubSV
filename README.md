@@ -1,52 +1,20 @@
-## ScrubSV
-A toolkit to detect and flag false SV's based on SNP's 
-Hackathon team: Lead: Fritz Sedlazeck - SysAdmin: Steve Osazuwa - Programmers: Priya Kritivasan, Kshithija Nagulapalli, David Oliver, Seungyeul Yoo
-
-## How to cite this work in a publication: Sedlazeck F et al. ScrubSV: A toolkit to detect and flag false SV's based on SNP's
-
-link to the DOI:
-
 ![alt text](ScrubSV_logo.png)
+
+## ScrubSV
+A toolkit to detect and flag potentially false SV's based on SNP's  and coverage.
+Hackathon team: Lead: Fritz Sedlazeck - SysAdmin: Steve Osazuwa - Programmers: Priya Kritivasan, Kshithija Nagulapalli, David Oliver, Seungyeul Yoo
 
 ## Quickstart
 
 <Here is how you run it>
+  
+## Slides from the hackathon
+We created and presented this method over the NYGC NCBI Hackathon in August 2018. 
+[Here is the link to the slides](https://docs.google.com/presentation/d/16ZwtBfEyv7mvlIw1uxhgUtazK3lBlYRjU0Ys9OCQss8/edit?usp=sharing)
 
-## What is the problem?
 
-### According to Fritz Sedlazeck, 50-70% of SV calls are bad
-
-## Why should we solve it?
-
-### Because we are the best bioinformaticians ever!
 
 ## Software Workflow Diagram
-![alt text](Workflow.png)
-Methodology Slides:
-https://docs.google.com/presentation/d/16ZwtBfEyv7mvlIw1uxhgUtazK3lBlYRjU0Ys9OCQss8/edit?usp=sharing
-## File structure diagram 
+We included a workflow of our pipeline describing the modules in the repo. Feel free to check it out. 
 
-#### _Define paths, variable names, etc_
 
-# Installation options:
-
-We provide two options for installing <this software>: Docker or directly from Github.
-
-### Docker
-
-The Docker image contains <this software> as well as a webserver and FTP server in case you want to deploy the FTP server. It does also contain a web server for testing the <this software> main website (but should only be used for debug purposes).
-
-1. `docker pull ncbihackathons/<this software>` command to pull the image from the DockerHub
-2. `docker run ncbihackathons/<this software>` Run the docker image from the master shell script
-3. Edit the configuration files as below
-
-### Installing <this software> from Github
-
-1. `git clone https://github.com/NCBI-Hackathons/<this software>.git`
-2. Edit the configuration files as below
-3. `sh server/<this software>.sh` to test
-4. Add cron job as required (to execute <this software>.sh script)
-
-### Configuration
-
-```Examples here```
