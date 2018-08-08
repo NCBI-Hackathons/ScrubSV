@@ -49,7 +49,7 @@ gend<-ifelse(as.numeric(as.character(tab$V3))<as.numeric(as.character(tab$V4)),a
 glen<-gend-gstt
 grns<-GRanges(gchr,IRanges(gstt,gend),symbol=tab$V1)
 
-flag<-rep("OK",dim(tab)[[1]])
+flag<-rep("",dim(tab)[[1]])
 
 for(i in 1:(length(flag)-1)){
 	sel_rns<-GRanges(gchr[i],IRanges(gstt[i],gend[i]))
@@ -60,7 +60,7 @@ for(i in 1:(length(flag)-1)){
 		oid<-as.character(mcols(new_ref)[queryHits(hits),1])
 		overlaps<-pintersect(new_ref[queryHits(hits)],sel_rns[subjectHits(hits)])
 		overlen<-glen[match(oid,tab$V1)]
-		flag[i]<-ifelse(length(which(overlen<sel_len))>0,"FLAG","OK")
+		flag[i]<-ifelse(length(which(overlen<sel_len))>0,"OVLP","")
 	}
 }
 
@@ -69,6 +69,7 @@ new_out<-paste(strsplit(filename,"[.]")[[1]][1],"_",type,"_flag.txt",sep="")
 colnames(new_tab)<-c("ID","Chromosome","POS","End","SVTYPE","FLAG")
 write.table(new_tab,new_out,row.names=F,col.names=T,quote=F,sep="\t")
 new_tab<-new_tab[,c(1,3,6)]
+new_tab<-new_tab[which(new_tab[,3]=="OVLP"),]
 new_out<-gsub("flag","overlap",new_out)
 write.table(new_tab,new_out,row.names=F,col.names=T,quote=F,sep="\t")
 
